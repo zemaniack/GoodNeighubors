@@ -35,7 +35,9 @@ function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={user ? "Home" : "Auth"}>
+      {/* <Stack.Navigator initialRouteName={user ? "Home" : "Auth"}>
+       */}
+      <Stack.Navigator initialRouteName={"Auth"}>
         <Stack.Screen name="Auth" component={AuthScreen} />
         {user && (
           <>

@@ -27,6 +27,8 @@ const AuthScreen = ({ navigation }) => {
   const [username, setUsername] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
+  const [passwordError, setPasswordError] = React.useState("");
+  const [loginError, setLoginError] = React.useState("");
 
   // Firebase auth
   const auth = getAuth(app);
@@ -40,7 +42,6 @@ const AuthScreen = ({ navigation }) => {
       // The signed-in user info.
       const user = result.user;
       console.log(user);
-      // ...
     })
     .catch((error) => {
       // Handle Errors here.
@@ -50,7 +51,6 @@ const AuthScreen = ({ navigation }) => {
       const email = error.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
     });
 
   // Function to handle creating a new user
@@ -61,15 +61,14 @@ const AuthScreen = ({ navigation }) => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
-          // ...
+          navigation.navigate("Home");
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          // ..
         });
     } else {
-      alert("Passwords do not match");
+      setPasswordError("Passwords do not match!");
     }
   };
 
@@ -86,68 +85,106 @@ const AuthScreen = ({ navigation }) => {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        setLoginError("No account found with that email/password!");
       });
+  };
+
+  // Function to switch between login and create account
+  const handleSwitchAuthType = () => {
+    if (action === "login") {
+      setAction("createAccount");
+    } else {
+      setAction("login");
+    }
+    setEmail("");
+    setPassword("");
   };
 
   // Function to create a new user
   const createAccount = () => {
     return (
       <View style={styles.create}>
-        <TextInput
-          style={styles.input}
-          autoCapitalize="none"
-          placeholder="Username"
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-        />
-        <View style={styles.realName}>
+        <LinearGradient
+          colors={["#192f6a", "#3b5998", "#4c669f"]}
+          style={styles.bubble}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text
+            style={{
+              color: "white",
+              textAlign: "center",
+              fontSize: 30,
+              fontWeight: "bold",
+            }}
+          >
+            Create Account
+          </Text>
           <TextInput
-            style={styles.name}
+            style={styles.input}
             autoCapitalize="none"
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={(text) => setFirstName(text)}
+            placeholder="Username"
+            value={username}
+            onChangeText={(text) => setUsername(text)}
           />
-          <TextInput
-            style={styles.name}
-            autoCapitalize="none"
-            placeholder="Last Name"
-            value={lastName}
-            onChangeText={(text) => setLastName(text)}
-          />
-        </View>
-        <TextInput
-          style={styles.input}
-          autoCapitalize="none"
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          style={styles.input}
-          autoCapitalize="none"
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-        <TextInput
-          style={styles.input}
-          autoCapitalize="none"
-          placeholder="Password Confirmation"
-          value={passwordConfirmation}
-          onChangeText={(text) => setPasswordConfirmation(text)}
-        />
-        <View style={styles.loginCreate}>
-          <View style={styles.buttonContainer}>
-            <Button title="Back to Login" onPress={() => setAction("login")} />
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Create Account"
-              onPress={() => handleCreateAccount()}
+          <View style={styles.realName}>
+            <TextInput
+              style={styles.name}
+              autoCapitalize="none"
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={(text) => setFirstName(text)}
+            />
+            <TextInput
+              style={styles.name}
+              autoCapitalize="none"
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={(text) => setLastName(text)}
             />
           </View>
-        </View>
+          <TextInput
+            style={styles.input}
+            autoCapitalize="none"
+            placeholder="Email"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+          />
+          <TextInput
+            style={styles.input}
+            autoCapitalize="none"
+            placeholder="Password"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry={true}
+          />
+          <Text style={styles.passDontMatch}>
+            {passwordError === "" ? "" : "Passwords do not match!"}
+          </Text>
+          <TextInput
+            style={styles.input}
+            autoCapitalize="none"
+            placeholder="Password Confirmation"
+            value={passwordConfirmation}
+            onChangeText={(text) => setPasswordConfirmation(text)}
+            secureTextEntry={true}
+          />
+          <View style={styles.loginCreate}>
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Back to Login"
+                onPress={() => handleSwitchAuthType()}
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Create Account"
+                onPress={() => handleCreateAccount()}
+                color="blue"
+              />
+            </View>
+          </View>
+        </LinearGradient>
       </View>
     );
   };
@@ -156,46 +193,73 @@ const AuthScreen = ({ navigation }) => {
   const login = () => {
     return (
       <View style={styles.login}>
-        <TextInput
-          style={styles.input}
-          autoCapitalize="none"
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          style={styles.input}
-          autoCapitalize="none"
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-        <View style={styles.loginCreate}>
-          <View style={styles.buttonContainer}>
-            <Button title="Login" onPress={() => handleLogin()} />
+        <LinearGradient
+          colors={["#192f6a", "#3b5998", "#4c669f"]}
+          style={styles.bubble}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text
+            style={{
+              color: "white",
+              textAlign: "center",
+              fontSize: 30,
+              fontWeight: "bold",
+            }}
+          >
+            Login
+          </Text>
+          <TextInput
+            style={styles.input}
+            autoCapitalize="none"
+            placeholder="Email"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+          />
+          <TextInput
+            style={styles.input}
+            autoCapitalize="none"
+            placeholder="Password"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry={true}
+          />
+          <Text style={styles.loginError}>
+            {loginError === ""
+              ? ""
+              : "No account found with that email/password!"}
+          </Text>
+          <View style={styles.loginCreate}>
+            <View style={styles.buttonContainer}>
+              <Button
+                color="blue"
+                title="Login"
+                onPress={() => handleLogin()}
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                borderRadius="10"
+                title="Create Account"
+                onPress={() => handleSwitchAuthType()}
+              />
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
+          <Text
+            style={{
+              color: "white",
+              textAlign: "center",
+            }}
+          >
+            - OR -
+          </Text>
+          <View style={styles.googleButton}>
             <Button
-              borderRadius="10"
-              title="Create Account"
-              onPress={() => setAction("createAccount")}
+              title="Sign in with Google"
+              onPress={() => signInWithRedirect(auth, provider)}
             />
           </View>
-        </View>
-        <Text
-          style={{
-            color: "white",
-            textAlign: "center",
-          }}
-        >
-          - OR -
-        </Text>
-        <View style={styles.googleButton}>
-          <Button
-            title="Sign in with Google"
-            onPress={() => signInWithRedirect(auth, provider)}
-          />
-        </View>
+        </LinearGradient>
       </View>
     );
   };
@@ -261,6 +325,22 @@ const styles = StyleSheet.create({
     margin: 10,
     width: 200,
     alignSelf: "center",
+  },
+  bubble: {
+    padding: 20,
+    borderRadius: 20,
+  },
+  passDontMatch: {
+    color: "red",
+    textAlign: "center",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  loginError: {
+    color: "red",
+    textAlign: "center",
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });
 

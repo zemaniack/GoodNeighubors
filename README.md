@@ -27,7 +27,10 @@ These instructions will get you a copy of the project up and running on your loc
 4. Start the development server: npm start
 
 ## Contributing
+
 1. Create a new branch off of main
 2. Complete work in your branch
 3. When work is complete, pull dev and then merge into it. DO NOT MERGE DIRECTLY TO MAIN
 4. When features are ready and tested by all in dev, then it will be merged into main.
+
+## Technologies used: React Native, Firebase, NPM, Redux
