@@ -85,17 +85,23 @@ const AuthScreen = ({ navigation }) => {
       return;
     } else {
       if (password === passwordConfirmation) {
-        createUserWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            console.log(user);
-            navigation.navigate("Home");
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-          });
+        if (password.length < 8) {
+          setCreateError("Password must be at least 8 characters long!");
+          rotateInput();
+          return;
+        } else {
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              // Signed in
+              const user = userCredential.user;
+              console.log(user);
+              navigation.navigate("Home");
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+            });
+        }
       } else {
         setCreateError("Passwords do not match!");
         rotateInput();
@@ -256,9 +262,12 @@ const AuthScreen = ({ navigation }) => {
                   rotate:
                     password === ""
                       ? rotateInterpolate
-                      : passwordConfirmation !== "" &&
-                        password !== passwordConfirmation &&
-                        checkFields()
+                      : (passwordConfirmation !== "" &&
+                          password !== passwordConfirmation &&
+                          checkFields()) ||
+                        (password.length < 8 &&
+                          checkFields() &&
+                          passwordConfirmation == password)
                       ? rotateInterpolate
                       : 0,
                 },
@@ -268,8 +277,16 @@ const AuthScreen = ({ navigation }) => {
             <TextInput
               style={[
                 styles.input,
-                password === "" ||
-                (password !== passwordConfirmation && checkFields())
+                password == "" && createError !== "" ? styles.error : null,
+                passwordConfirmation.length < 8 &&
+                checkFields() &&
+                passwordConfirmation == password
+                  ? styles.error
+                  : null,
+                password !== "" && createError == "Passwords do not match!"
+                  ? styles.error
+                  : null,
+                password !== passwordConfirmation && checkFields()
                   ? styles.error
                   : null,
               ]}
@@ -287,9 +304,12 @@ const AuthScreen = ({ navigation }) => {
                   rotate:
                     passwordConfirmation === ""
                       ? rotateInterpolate
-                      : password !== "" &&
-                        password !== passwordConfirmation &&
-                        checkFields()
+                      : (password !== "" &&
+                          password !== passwordConfirmation &&
+                          checkFields()) ||
+                        (password.length < 8 &&
+                          checkFields() &&
+                          passwordConfirmation == password)
                       ? rotateInterpolate
                       : 0,
                 },
@@ -299,8 +319,19 @@ const AuthScreen = ({ navigation }) => {
             <TextInput
               style={[
                 styles.input,
-                passwordConfirmation === "" ||
-                (password !== passwordConfirmation && checkFields())
+                passwordConfirmation == "" && createError !== ""
+                  ? styles.error
+                  : null,
+                passwordConfirmation.length < 8 &&
+                checkFields() &&
+                passwordConfirmation == password
+                  ? styles.error
+                  : null,
+                passwordConfirmation !== "" &&
+                createError !== "Passwords do not match!"
+                  ? styles.error
+                  : null,
+                password !== passwordConfirmation && checkFields()
                   ? styles.error
                   : null,
               ]}
