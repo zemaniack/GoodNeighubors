@@ -50,6 +50,7 @@ const AuthScreen = ({ navigation }) => {
       // The signed-in user info.
       const user = result.user;
       console.log(user);
+      navigation.navigate("Home");
     })
     .catch((error) => {
       // Handle Errors here.
@@ -100,6 +101,7 @@ const AuthScreen = ({ navigation }) => {
             .catch((error) => {
               const errorCode = error.code;
               const errorMessage = error.message;
+              console.log(errorCode, errorMessage);
             });
         }
       } else {
@@ -201,12 +203,20 @@ const AuthScreen = ({ navigation }) => {
               onChangeText={(text) => setUsername(text)}
             />
           </Animated.View>
-          <View style={styles.realName}>
+          <View
+            style={{
+              ...styles.realName,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
             <Animated.View
               style={{
                 transform: [
                   { rotate: firstName === "" ? rotateInterpolate : 0 },
                 ],
+                flex: 1,
+                marginRight: 5,
               }}
             >
               <TextInput
@@ -225,6 +235,8 @@ const AuthScreen = ({ navigation }) => {
                 transform: [
                   { rotate: lastName === "" ? rotateInterpolate : 0 },
                 ],
+                flex: 1,
+                marginLeft: 5,
               }}
             >
               <TextInput
@@ -328,7 +340,7 @@ const AuthScreen = ({ navigation }) => {
                   ? styles.error
                   : null,
                 passwordConfirmation !== "" &&
-                createError !== "Passwords do not match!"
+                createError == "Passwords do not match!"
                   ? styles.error
                   : null,
                 password !== passwordConfirmation && checkFields()
