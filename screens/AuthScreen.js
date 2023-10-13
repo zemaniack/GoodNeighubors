@@ -17,8 +17,8 @@ import {
   signInWithRedirect,
   getRedirectResult,
 } from "firebase/auth";
-import app from "../firebaseConfig";
-import { ActivityIndicator } from "react-native";
+import { app, db } from "../firebaseConfig";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 
 const AuthScreen = ({ navigation }) => {
   // States for the form inputs
@@ -60,6 +60,25 @@ const AuthScreen = ({ navigation }) => {
     return true;
   };
 
+  // Function to create a new user in the database
+  const createUser = async (user) => {
+    // Should create a new user in the users collection
+    try {
+      const docRef = await addDoc(collection(db, "users"), {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        username: username,
+        uid: user.uid,
+        accountSetup: false,
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+    return;
+  };
+
   // Function to handle creating a new user
   const handleCreateAccount = () => {
     if (!checkFields()) {
@@ -78,7 +97,8 @@ const AuthScreen = ({ navigation }) => {
               // Signed in
               const user = userCredential.user;
               console.log(user);
-              navigation.navigate("Home");
+              navigation.navigate("Profile");
+              createUser(user);
             })
             .catch((error) => {
               const errorCode = error.code;
@@ -193,6 +213,28 @@ const AuthScreen = ({ navigation }) => {
     signInWithRedirect(auth, provider);
   };
 
+  const userCreateOrSignInWithGoogle = async (user) => {
+    // Check if the user is already in the database
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", user.email));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      // Create a new user in the database
+      const docRef = await addDoc(collection(db, "users"), {
+        firstName: user.displayName.split(" ")[0],
+        lastName: user.displayName.split(" ")[1],
+        email: user.email,
+        username: user.email,
+        uid: user.uid,
+        accountSetup: false,
+      });
+      console.log("Document written with ID: ", docRef.id);
+      navigation.navigate("Profile");
+    } else {
+      navigation.navigate("Home");
+    }
+  };
+
   getRedirectResult(auth)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access Google APIs.
@@ -200,8 +242,7 @@ const AuthScreen = ({ navigation }) => {
       const token = credential.accessToken;
       // The signed-in user info.
       const user = result.user;
-      console.log(user);
-      navigation.navigate("Home");
+      userCreateOrSignInWithGoogle(user);
     })
     .catch((error) => {
       // Handle Errors here.
@@ -606,7 +647,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "linear-gradient(blue, pink)",
     height: "100%",
     width: "100%",
   },

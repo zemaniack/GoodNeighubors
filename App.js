@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import app from "./firebaseConfig";
+import { app } from "./firebaseConfig";
 
 import AuthScreen from "./screens/AuthScreen";
 import HomeScreen from "./screens/HomeScreen";

@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaView, Text, Button } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import app from "../firebaseConfig";
+import { app } from "../firebaseConfig";
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
