@@ -126,20 +126,28 @@ const AuthScreen = ({ navigation }) => {
 
   // Function to handle logging in an existing user
   const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user);
+    if (!checkFields()) {
+      console.log("Login:", checkFields());
+      setLoginError("Please fill out all fields!");
+      rotateInput();
+      return;
+    } else {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
 
-        navigation.navigate("Home");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        setLoginError("No account found with that email/password!");
-        rotateInput();
-      });
+          navigation.navigate("Home");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setLoginError("No account found with that email/password!");
+          console.log("what");
+          rotateInput();
+        });
+    }
   };
 
   // Function to switch between login and create account
@@ -451,18 +459,52 @@ const AuthScreen = ({ navigation }) => {
           >
             Login
           </Text>
-          <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  rotate:
+                    email === "" || (loginError !== "" && checkFields())
+                      ? rotateInterpolate
+                      : 0,
+                },
+              ],
+            }}
+          >
             <TextInput
-              style={[styles.input, loginError !== "" ? styles.error : null]}
+              style={[
+                styles.input,
+                (email === "" && loginError !== "") ||
+                (loginError !== "" && checkFields())
+                  ? styles.error
+                  : null,
+              ]}
               autoCapitalize="none"
               placeholder="Email"
               value={email}
               onChangeText={(text) => setEmail(text)}
             />
           </Animated.View>
-          <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  rotate:
+                    password === "" || (loginError !== "" && checkFields())
+                      ? rotateInterpolate
+                      : 0,
+                },
+              ],
+            }}
+          >
             <TextInput
-              style={[styles.input, loginError !== "" ? styles.error : null]}
+              style={[
+                styles.input,
+                (password === "" && loginError !== "") ||
+                (loginError !== "" && checkFields())
+                  ? styles.error
+                  : null,
+              ]}
               autoCapitalize="none"
               placeholder="Password"
               value={password}
@@ -470,11 +512,7 @@ const AuthScreen = ({ navigation }) => {
               secureTextEntry={true}
             />
           </Animated.View>
-          <Text style={styles.loginError}>
-            {loginError === ""
-              ? ""
-              : "No account found with that email/password!"}
-          </Text>
+          <Text style={styles.loginError}>{loginError}</Text>
           <View style={styles.loginCreate}>
             <View style={styles.buttonContainer}>
               <Button
