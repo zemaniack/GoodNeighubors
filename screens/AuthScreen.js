@@ -586,17 +586,20 @@ const styles = StyleSheet.create({
   loginCreate: {
     flexDirection: "row",
     justifyContent: "center",
+    flexWrap: "wrap",
   },
   buttonContainer: {
     margin: 10,
     width: 150,
   },
   create: {
-    width: 500,
+    width: "100%",
+    maxWidth: 500,
     justifyContent: "center",
   },
   login: {
-    width: 500,
+    width: "100%",
+    maxWidth: 500,
     justifyContent: "center",
   },
   container: {
