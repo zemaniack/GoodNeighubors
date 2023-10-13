@@ -37,7 +37,10 @@ function App() {
     <NavigationContainer>
       {/* <Stack.Navigator initialRouteName={user ? "Home" : "Auth"}>
        */}
-      <Stack.Navigator initialRouteName={"Auth"}>
+      <Stack.Navigator
+        initialRouteName={"Auth"}
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="Auth" component={AuthScreen} />
         {user && (
           <>
