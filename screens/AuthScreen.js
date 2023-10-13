@@ -18,6 +18,7 @@ import {
   getRedirectResult,
 } from "firebase/auth";
 import app from "../firebaseConfig";
+import { ActivityIndicator } from "react-native";
 
 const AuthScreen = ({ navigation }) => {
   // States for the form inputs
@@ -27,6 +28,7 @@ const AuthScreen = ({ navigation }) => {
   const [passwordConfirmation, setPasswordConfirmation] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
+  const [emailError, setEmailError] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [loginError, setLoginError] = React.useState("");
   const [createError, setCreateError] = React.useState("");
@@ -41,26 +43,6 @@ const AuthScreen = ({ navigation }) => {
   // Firebase auth
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider(app);
-
-  getRedirectResult(auth)
-    .then((result) => {
-      // This gives you a Google Access Token. You can use it to access Google APIs.
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
-      // The signed-in user info.
-      const user = result.user;
-      console.log(user);
-      navigation.navigate("Home");
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.email;
-      // The AuthCredential type that was used.
-      const credential = GoogleAuthProvider.credentialFromError(error);
-    });
 
   // Function to chek that all fields are filled out
   const checkFields = () => {
@@ -101,7 +83,38 @@ const AuthScreen = ({ navigation }) => {
             .catch((error) => {
               const errorCode = error.code;
               const errorMessage = error.message;
-              console.log(errorCode, errorMessage);
+              console.log(
+                "Err Code: ",
+                errorCode,
+                "\nErr Message: ",
+                errorMessage
+              );
+              switch (errorCode) {
+                case "auth/email-already-in-use":
+                  setCreateError(
+                    "This email is already in use by another account."
+                  );
+                  setEmailError(
+                    "This email is already in use by another account."
+                  );
+                  break;
+                case "auth/invalid-email":
+                  setCreateError("The email address is not valid.");
+                  setEmailError("The email address is not valid.");
+                  break;
+                case "auth/operation-not-allowed":
+                  setCreateError("Email/password accounts are not enabled.");
+                  setEmailError("Email/password accounts are not enabled.");
+                  break;
+                case "auth/weak-password":
+                  setCreateError("The password is too weak.");
+                  setEmailError("The password is too weak.");
+                  break;
+                default:
+                  setCreateError(errorMessage);
+                  break;
+              }
+              rotateInput();
             });
         }
       } else {
@@ -166,6 +179,31 @@ const AuthScreen = ({ navigation }) => {
       }),
     ]).start();
   };
+
+  // Function to handle signing in with Google
+  const handleGoogleSignIn = () => {
+    signInWithRedirect(auth, provider);
+  };
+
+  getRedirectResult(auth)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access Google APIs.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      // The signed-in user info.
+      const user = result.user;
+      console.log(user);
+      navigation.navigate("Home");
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const email = error.email;
+      // The AuthCredential type that was used.
+      const credential = GoogleAuthProvider.credentialFromError(error);
+    });
 
   // Function to create a new user
   const createAccount = () => {
@@ -253,13 +291,29 @@ const AuthScreen = ({ navigation }) => {
           </View>
           <Animated.View
             style={{
-              transform: [{ rotate: email === "" ? rotateInterpolate : 0 }],
+              transform: [
+                {
+                  rotate:
+                    email === ""
+                      ? rotateInterpolate
+                      : emailError !== "" && checkFields()
+                      ? rotateInterpolate
+                      : 0,
+                },
+              ],
             }}
           >
             <TextInput
               style={[
                 styles.input,
                 email === "" && createError !== "" ? styles.error : null,
+                createError === "The email address is not valid."
+                  ? styles.error
+                  : null,
+                createError ===
+                "This email is already in use by another account."
+                  ? styles.error
+                  : null,
               ]}
               autoCapitalize="none"
               placeholder="Email"
@@ -448,7 +502,7 @@ const AuthScreen = ({ navigation }) => {
           <View style={styles.googleButton}>
             <Button
               title="Sign in with Google"
-              onPress={() => signInWithRedirect(auth, provider)}
+              onPress={() => handleGoogleSignIn()}
             />
           </View>
         </LinearGradient>
