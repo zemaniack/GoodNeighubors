@@ -4,8 +4,7 @@ import { getAuth, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { app } from "../firebaseConfig";
 
-const SettingsScreen = () => {
-  const navigation = useNavigation();
+const SettingsScreen = ({ navigation }) => {
   const auth = getAuth(app);
 
   const handleSignOut = () => {
@@ -29,6 +28,7 @@ const SettingsScreen = () => {
     <SafeAreaView>
       <Text>Settings Screen</Text>
       <Button title="Sign Out" onPress={handleSignOut} />
+      <Button title="Back to Profile" onPress={() => navigation.goBack()} />
     </SafeAreaView>
   );
 };

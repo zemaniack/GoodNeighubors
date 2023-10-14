@@ -4,8 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { getAuth } from "firebase/auth";
 import { app } from "../firebaseConfig";
 
-const ProfileScreen = () => {
-  // Firebase auth
+const ProfileScreen = ({ navigation }) => {
   const auth = getAuth(app);
 
   return (
