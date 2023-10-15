@@ -34,9 +34,9 @@ const ProfileScreen = ({ navigation }) => {
   const [emergencyContactName, setEmergencyContactName] = React.useState("");
   const [emergencyContactNumber, setEmergencyContactNumber] =
     React.useState("");
+  const [emergencyContactEmail, setEmergencyContactEmail] = React.useState("");
   const [numberOfChildren, setNumberOfChildren] = React.useState("");
   const [numberOfPets, setNumberOfPets] = React.useState("");
-  const [disabilities, setDisabilities] = React.useState("");
   const [medicalConditions, setMedicalConditions] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
@@ -65,9 +65,9 @@ const ProfileScreen = ({ navigation }) => {
         setDob(data?.dob ?? "");
         setEmergencyContactName(data?.emergencyContactName ?? "");
         setEmergencyContactNumber(data?.emergencyContactNumber ?? "");
+        setEmergencyContactEmail(data?.emergencyContactEmail ?? "");
         setNumberOfChildren(data?.numberOfChildren ?? "");
         setNumberOfPets(data?.numberOfPets ?? "");
-        setDisabilities(data?.disabilities ?? "");
         setMedicalConditions(data?.medicalConditions ?? "");
         setFirstName(data?.firstName ?? "");
         setLastName(data?.lastName ?? "");
@@ -91,9 +91,9 @@ const ProfileScreen = ({ navigation }) => {
       dob: dob,
       emergencyContactName: emergencyContactName,
       emergencyContactNumber: emergencyContactNumber,
+      emergencyContactEmail: emergencyContactEmail,
       numberOfChildren: numberOfChildren,
       numberOfPets: numberOfPets,
-      disabilities: disabilities,
       medicalConditions: medicalConditions,
       firstName: firstName,
       lastName: lastName,
@@ -130,10 +130,6 @@ const ProfileScreen = ({ navigation }) => {
               title="Go to Settings"
               onPress={() => navigation.navigate("Settings")}
             />
-            <Button
-              title="print user"
-              onPress={() => console.log(auth.currentUser)}
-            />
           </View>
           <View style={styles.sectionContainer}>
             <View style={styles.profileContainer}>
@@ -144,11 +140,13 @@ const ProfileScreen = ({ navigation }) => {
                 end={{ x: 1, y: 0 }}
               >
                 <Text style={styles.header}>Public Profile</Text>
-                <Image
-                  source={require("../assets/defaultProfileIcon.png")}
-                  style={styles.profilePicture}
-                />
-                <Button title="Upload Photo"></Button>
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={require("../assets/defaultProfileIcon.png")}
+                    style={styles.profilePicture}
+                  />
+                  <Button title="Upload Photo"></Button>
+                </View>
                 <Text style={styles.profileName}>
                   {auth.currentUser.displayName}
                 </Text>
@@ -164,84 +162,108 @@ const ProfileScreen = ({ navigation }) => {
                 <Text style={styles.header}>Account Information</Text>
                 <ScrollView style={styles.infoSection}>
                   <View style={styles.names}>
-                    <TextInput
-                      style={[styles.input, styles.name]}
-                      autoCapitalize="none"
-                      placeholder="First Name"
-                      value={firstName}
-                      onChangeText={(text) => setFirstName(text)}
-                    />
-                    <TextInput
-                      style={[styles.input, styles.name]}
-                      autoCapitalize="none"
-                      placeholder="Last Name"
-                      value={lastName}
-                      onChangeText={(text) => setLastName(text)}
-                    />
+                    <View style={styles.formContainer}>
+                      <Text style={styles.label}>First Name</Text>
+                      <TextInput
+                        style={[styles.input, styles.name]}
+                        autoCapitalize="none"
+                        placeholder="Jane"
+                        value={firstName}
+                        onChangeText={(text) => setFirstName(text)}
+                      />
+                    </View>
+                    <View style={styles.formContainer}>
+                      <Text style={styles.label}>Last Name</Text>
+                      <TextInput
+                        style={[styles.input, styles.name]}
+                        autoCapitalize="none"
+                        placeholder="Smith"
+                        value={lastName}
+                        onChangeText={(text) => setLastName(text)}
+                      />
+                    </View>
                   </View>
+                  <Text style={styles.label}>Email</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Email"
+                    placeholder="email@email.com"
                     value={email}
                     onChangeText={(text) => setEmail(text)}
                   />
+                  <Text style={styles.label}>Username</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Username"
+                    placeholder="BuffaloBillsFan123"
                     value={username}
                     onChangeText={(text) => setUsername(text)}
                   />
+                  <Text style={styles.label}>Address</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Address"
+                    placeholder="123 Street Name, County, State Zip"
                     value={address}
                     onChangeText={(text) => setAddress(text)}
                   />
+                  <Text style={styles.label}>Account Type</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Account Type"
+                    placeholder="(basic, volunteer, authority, authority coordinator)"
                     value={accountType}
                     onChangeText={(text) => setAccountType(text)}
                   />
+                  <Text style={styles.label}>Phone Number</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Phone Number"
+                    placeholder="(123)-456-7890"
                     value={phoneNumber}
                     onChangeText={(text) => setPhoneNumber(text)}
                   />
+                  <Text style={styles.label}>Date of Birth</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Date of Birth"
+                    placeholder="January 1, 2000"
                     value={dob}
                     onChangeText={(text) => setDob(text)}
                   />
+                  <Text style={styles.label}>Emergency Contact Name</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Emergency Contact Name"
+                    placeholder="John Smith"
                     value={emergencyContactName}
                     onChangeText={(text) => setEmergencyContactName(text)}
                   />
+                  <Text style={styles.label}>Emergency Contact Number</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Emergency Contact Number"
+                    placeholder="(123)-456-7890"
                     value={emergencyContactNumber}
                     onChangeText={(text) => setEmergencyContactNumber(text)}
                   />
+                  <Text style={styles.label}>Emergency Contact Email</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Number of Children"
+                    placeholder="email@email.com"
+                    value={email}
+                    onChangeText={(text) => setEmergencyContactEmail(text)}
+                  />
+                  <Text style={styles.label}>Number of Children</Text>
+                  <TextInput
+                    style={styles.input}
+                    autoCapitalize="none"
+                    placeholder="3"
                     value={numberOfChildren}
                     onChangeText={(text) => setNumberOfChildren(text)}
                   />
+                  <Text style={styles.label}>Number of Pets</Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
@@ -249,17 +271,13 @@ const ProfileScreen = ({ navigation }) => {
                     value={numberOfPets}
                     onChangeText={(text) => setNumberOfPets(text)}
                   />
+                  <Text style={styles.label}>
+                    Significant Medical Conditions or Disabilities
+                  </Text>
                   <TextInput
                     style={styles.input}
                     autoCapitalize="none"
-                    placeholder="Disabilities"
-                    value={disabilities}
-                    onChangeText={(text) => setDisabilities(text)}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    autoCapitalize="none"
-                    placeholder="Medical Conditions"
+                    placeholder="Chronic Heart Disease, Asthma, Depression, etc."
                     value={medicalConditions}
                     onChangeText={(text) => setMedicalConditions(text)}
                   />
@@ -309,6 +327,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 20,
   },
+  imageContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  formContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    width: "100%",
+  },
   profilePicture: {
     width: 100,
     height: 100,
@@ -317,12 +348,15 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 30,
     fontWeight: "bold",
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
   },
   bubble: {
     padding: 20,
     borderRadius: 20,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     flexDirection: "column",
     flex: 1,
     width: "100%",
@@ -335,6 +369,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: "white",
+    placeholderTextColor: "grey",
   },
   infoSection: {
     width: "100%",
@@ -354,6 +389,11 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+  label: {
+    fontWeight: "bold",
+    marginLeft: 15,
+    marginTop: 5,
   },
 });
 

@@ -224,7 +224,7 @@ const AuthScreen = ({ navigation }) => {
         firstName: user.displayName.split(" ")[0],
         lastName: user.displayName.split(" ")[1],
         email: user.email,
-        username: user.email,
+        username: "",
         uid: user.uid,
         accountSetup: false,
       });
@@ -279,13 +279,14 @@ const AuthScreen = ({ navigation }) => {
               transform: [{ rotate: username === "" ? rotateInterpolate : 0 }],
             }}
           >
+            <Text style={styles.label}>Username</Text>
             <TextInput
               style={[
                 styles.input,
                 username === "" && createError !== "" ? styles.error : null,
               ]}
               autoCapitalize="none"
-              placeholder="Username"
+              placeholder="BuffaloBillsFan123"
               value={username}
               onChangeText={(text) => setUsername(text)}
             />
@@ -306,13 +307,14 @@ const AuthScreen = ({ navigation }) => {
                 marginRight: 5,
               }}
             >
+              <Text style={styles.label}>First Name</Text>
               <TextInput
                 style={[
                   styles.name,
                   firstName === "" && createError !== "" ? styles.error : null,
                 ]}
                 autoCapitalize="none"
-                placeholder="First Name"
+                placeholder="Jane"
                 value={firstName}
                 onChangeText={(text) => setFirstName(text)}
               />
@@ -326,13 +328,14 @@ const AuthScreen = ({ navigation }) => {
                 marginLeft: 5,
               }}
             >
+              <Text style={styles.label}>Last Name</Text>
               <TextInput
                 style={[
                   styles.name,
                   lastName === "" && createError !== "" ? styles.error : null,
                 ]}
                 autoCapitalize="none"
-                placeholder="Last Name"
+                placeholder="Smith"
                 value={lastName}
                 onChangeText={(text) => setLastName(text)}
               />
@@ -352,6 +355,7 @@ const AuthScreen = ({ navigation }) => {
               ],
             }}
           >
+            <Text style={styles.label}>Email</Text>
             <TextInput
               style={[
                 styles.input,
@@ -365,7 +369,7 @@ const AuthScreen = ({ navigation }) => {
                   : null,
               ]}
               autoCapitalize="none"
-              placeholder="Email"
+              placeholder="email@email.com"
               value={email}
               onChangeText={(text) => setEmail(text)}
             />
@@ -389,6 +393,7 @@ const AuthScreen = ({ navigation }) => {
               ],
             }}
           >
+            <Text style={styles.label}>Password</Text>
             <TextInput
               style={[
                 styles.input,
@@ -406,7 +411,7 @@ const AuthScreen = ({ navigation }) => {
                   : null,
               ]}
               autoCapitalize="none"
-              placeholder="Password"
+              placeholder="ABCDEF123456"
               value={password}
               onChangeText={(text) => setPassword(text)}
               secureTextEntry={true}
@@ -431,6 +436,7 @@ const AuthScreen = ({ navigation }) => {
               ],
             }}
           >
+            <Text style={styles.label}>Password Confirmation</Text>
             <TextInput
               style={[
                 styles.input,
@@ -451,7 +457,7 @@ const AuthScreen = ({ navigation }) => {
                   : null,
               ]}
               autoCapitalize="none"
-              placeholder="Password Confirmation"
+              placeholder="ABCDEF123456"
               value={passwordConfirmation}
               onChangeText={(text) => setPasswordConfirmation(text)}
               secureTextEntry={true}
@@ -512,6 +518,7 @@ const AuthScreen = ({ navigation }) => {
               ],
             }}
           >
+            <Text style={styles.label}>Email</Text>
             <TextInput
               style={[
                 styles.input,
@@ -521,7 +528,7 @@ const AuthScreen = ({ navigation }) => {
                   : null,
               ]}
               autoCapitalize="none"
-              placeholder="Email"
+              placeholder="email@email.com"
               value={email}
               onChangeText={(text) => setEmail(text)}
             />
@@ -538,6 +545,7 @@ const AuthScreen = ({ navigation }) => {
               ],
             }}
           >
+            <Text style={styles.label}>Password</Text>
             <TextInput
               style={[
                 styles.input,
@@ -611,6 +619,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: "white",
+    placeholderTextColor: "grey",
   },
   realName: {
     flexDirection: "row",
@@ -623,6 +632,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: "white",
+    placeholderTextColor: "grey",
   },
   loginCreate: {
     flexDirection: "row",
@@ -673,6 +683,11 @@ const styles = StyleSheet.create({
   },
   error: {
     borderColor: "red",
+  },
+  label: {
+    fontWeight: "bold",
+    marginLeft: 15,
+    marginTop: 5,
   },
 });
 
