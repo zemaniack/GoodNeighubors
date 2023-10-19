@@ -161,28 +161,28 @@ const ProfileScreen = ({ navigation }) => {
               >
                 <Text style={styles.header}>Account Information</Text>
                 <ScrollView style={styles.infoSection}>
-                  <View style={styles.names}>
-                    <View style={styles.formContainer}>
-                      <Text style={styles.label}>First Name</Text>
-                      <TextInput
-                        style={[styles.input, styles.name]}
-                        autoCapitalize="none"
-                        placeholder="Jane"
-                        value={firstName}
-                        onChangeText={(text) => setFirstName(text)}
-                      />
-                    </View>
-                    <View style={styles.formContainer}>
-                      <Text style={styles.label}>Last Name</Text>
-                      <TextInput
-                        style={[styles.input, styles.name]}
-                        autoCapitalize="none"
-                        placeholder="Smith"
-                        value={lastName}
-                        onChangeText={(text) => setLastName(text)}
-                      />
-                    </View>
+                  {/* <View style={styles.names}> */}
+                  <View style={styles.namesLabelContainer}>
+                    <Text style={[styles.label, styles.name]}>First Name</Text>
+                    <Text style={[styles.label, styles.name]}>Last Name</Text>
                   </View>
+                  <View style={styles.namesContainer}>
+                    <TextInput
+                      style={[styles.input, styles.name]}
+                      autoCapitalize="none"
+                      placeholder="Jane"
+                      value={firstName}
+                      onChangeText={(text) => setFirstName(text)}
+                    />
+                    <TextInput
+                      style={[styles.input, styles.name]}
+                      autoCapitalize="none"
+                      placeholder="Smith"
+                      value={lastName}
+                      onChangeText={(text) => setLastName(text)}
+                    />
+                  </View>
+                  {/* </View> */}
                   <Text style={styles.label}>Email</Text>
                   <TextInput
                     style={styles.input}
@@ -252,7 +252,7 @@ const ProfileScreen = ({ navigation }) => {
                     style={styles.input}
                     autoCapitalize="none"
                     placeholder="email@email.com"
-                    value={email}
+                    value={emergencyContactEmail}
                     onChangeText={(text) => setEmergencyContactEmail(text)}
                   />
                   <Text style={styles.label}>Number of Children</Text>
@@ -333,11 +333,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  formContainer: {
+  namesContainer: {
     flex: 1,
-    flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingBottom: 10,
+  },
+  namesLabelContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
     width: "100%",
   },
   profilePicture: {
@@ -378,12 +386,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  names: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
   name: {
     flex: 1,
+    width: "100%",
   },
   infoFooter: {
     width: "100%",

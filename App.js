@@ -33,16 +33,16 @@ function App() {
     return null;
   }
 
+  const developing = true;
+
   return (
     <NavigationContainer>
-      {/* <Stack.Navigator initialRouteName={user ? "Home" : "Auth"}>
-       */}
       <Stack.Navigator
-        initialRouteName={"Auth"}
+        initialRouteName={developing ? "Home" : user ? "Home" : "Auth"}
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Auth" component={AuthScreen} />
-        {user && (
+        {(user || developing) && (
           <>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
