@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   FlatList,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { getAuth } from "firebase/auth";
@@ -23,6 +24,7 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import * as ImagePicker from "expo-image-picker";
 
 const ProfileScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -36,10 +38,12 @@ const ProfileScreen = ({ navigation }) => {
     React.useState("");
   const [emergencyContactEmail, setEmergencyContactEmail] = React.useState("");
   const [numberOfChildren, setNumberOfChildren] = React.useState("");
+  const [numberOfAdults, setNumberOfAdults] = React.useState("");
   const [numberOfPets, setNumberOfPets] = React.useState("");
   const [medicalConditions, setMedicalConditions] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
+  const [profilePicture, setProfilePicture] = React.useState(null);
 
   const auth = getAuth(app);
 
@@ -67,6 +71,7 @@ const ProfileScreen = ({ navigation }) => {
         setEmergencyContactNumber(data?.emergencyContactNumber ?? "");
         setEmergencyContactEmail(data?.emergencyContactEmail ?? "");
         setNumberOfChildren(data?.numberOfChildren ?? "");
+        setNumberOfAdults(data?.numberOfAdults ?? "");
         setNumberOfPets(data?.numberOfPets ?? "");
         setMedicalConditions(data?.medicalConditions ?? "");
         setFirstName(data?.firstName ?? "");
@@ -93,6 +98,7 @@ const ProfileScreen = ({ navigation }) => {
       emergencyContactNumber: emergencyContactNumber,
       emergencyContactEmail: emergencyContactEmail,
       numberOfChildren: numberOfChildren,
+      numberOfAdults: numberOfAdults,
       numberOfPets: numberOfPets,
       medicalConditions: medicalConditions,
       firstName: firstName,
@@ -109,6 +115,28 @@ const ProfileScreen = ({ navigation }) => {
         console.error("Error writing document: ", error);
       });
   };
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== "granted") {
+      // If permission is denied, show an alert
+      Alert.alert(
+        "Permission Denied",
+        `Sorry, we need camera  
+             roll permission to upload images.`
+      );
+    } else {
+      // Launch the image library and get the selected image
+      const result = await ImagePicker.launchImageLibraryAsync();
+
+      if (!result.cancelled) {
+        setProfilePicture(result.uri);
+      }
+    }
+  };
+
+  const uploadProfileImage = async () => {};
 
   return (
     console.log(auth.currentUser),
@@ -145,7 +173,7 @@ const ProfileScreen = ({ navigation }) => {
                     source={require("../assets/defaultProfileIcon.png")}
                     style={styles.profilePicture}
                   />
-                  <Button title="Upload Photo"></Button>
+                  <Button title="Upload Photo" onPress={() => pickImage()} />
                 </View>
                 <Text style={styles.profileName}>
                   {auth.currentUser.displayName}
@@ -231,6 +259,14 @@ const ProfileScreen = ({ navigation }) => {
                     value={dob}
                     onChangeText={(text) => setDob(text)}
                   />
+                  <Text style={[styles.label, styles.sectionTitle]}>
+                    Emergency Contact Information
+                  </Text>
+                  <Text style={styles.description}>
+                    This will be used only in emergency situations, such as
+                    being incapacitated or unable to be reached during a
+                    disaster situation.
+                  </Text>
                   <Text style={styles.label}>Emergency Contact Name</Text>
                   <TextInput
                     style={styles.input}
@@ -252,8 +288,24 @@ const ProfileScreen = ({ navigation }) => {
                     style={styles.input}
                     autoCapitalize="none"
                     placeholder="email@email.com"
-                    value={email}
+                    value={emergencyContactEmail}
                     onChangeText={(text) => setEmergencyContactEmail(text)}
+                  />
+                  <Text style={[styles.label, styles.sectionTitle]}>
+                    Household Information
+                  </Text>
+                  <Text style={styles.description}>
+                    This information will be used to help first responders
+                    determine the number of people and pets that may need
+                    assistance during a disaster situation.
+                  </Text>
+                  <Text style={styles.label}>Number of Adults</Text>
+                  <TextInput
+                    style={styles.input}
+                    autoCapitalize="none"
+                    placeholder="2"
+                    value={numberOfAdults}
+                    onChangeText={(text) => setNumberOfAdults(text)}
                   />
                   <Text style={styles.label}>Number of Children</Text>
                   <TextInput
@@ -336,9 +388,8 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    width: "100%",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
   },
   profilePicture: {
     width: 100,
@@ -348,7 +399,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 30,
     fontWeight: "bold",
-    marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: "black",
   },
@@ -379,11 +429,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   names: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
   },
   name: {
     flex: 1,
+    height: 50,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "white",
+    placeholderTextColor: "grey",
   },
   infoFooter: {
     width: "100%",
@@ -394,6 +452,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 15,
     marginTop: 5,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    borderTopWidth: 1,
+    borderTopColor: "black",
+    marginRigth: 15,
+  },
+  description: {
+    margin: 15,
+    marginTop: 5,
+    marginBottom: 5,
   },
 });
 
