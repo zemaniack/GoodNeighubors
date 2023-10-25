@@ -25,6 +25,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
+import uploadImage from "../hooks/uploadImage";
 
 const ProfileScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -138,11 +139,12 @@ const ProfileScreen = ({ navigation }) => {
 
     if (!result.canceled) {
       setProfilePicture(result.assets[0].uri);
-      console.log();
+      console.log(profilePicture);
+
+      uploadImage(profilePicture);
+      console.log("uploaded");
     }
   };
-
-  const uploadProfileImage = async () => {};
 
   return (
     <SafeAreaView style={styles.container}>

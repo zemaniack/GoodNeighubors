@@ -34,11 +34,14 @@ function App() {
   }
 
   const developing = true;
+  const auth = getAuth(app).currentUser;
+  console.log("user", auth);
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={developing ? "Home" : user ? "Home" : "Auth"}
+        initialRouteName={auth && developing ? "Home" : "Auth"}
+        // initialRouteName="Auth"
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Auth" component={AuthScreen} />
