@@ -31,3 +31,4 @@ These instructions will get you a copy of the project up and running on your loc
 2. Complete work in your branch
 3. When work is complete, pull dev and then merge into it. DO NOT MERGE DIRECTLY TO MAIN
 4. When features are ready and tested by all in dev, then it will be merged into main.
+Here is an in depth guide for how to contribute to this project through GitHub: https://hickory-snapper-02c.notion.site/Github-Guide-For-TOP-23518ad7b4a84a07bafac885b8be8f54?pvs=4
