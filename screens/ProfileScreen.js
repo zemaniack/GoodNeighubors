@@ -25,6 +25,7 @@ import {
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uploadImage from "../hooks/uploadImage";
 import pickImage from "../hooks/pickImage";
+import Navbar from "../components/navbar";
 
 const ProfileScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -135,23 +136,13 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Navbar />
       <LinearGradient
         colors={["#4c669f", "#3b5998", "#192f6a"]}
         style={styles.container}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}
       >
-        <Text>Profile</Text>
-        <View style={styles.buttonsContainer}>
-          <Button
-            title="Go to Home"
-            onPress={() => navigation.navigate("Home")}
-          />
-          <Button
-            title="Go to Settings"
-            onPress={() => navigation.navigate("Settings")}
-          />
-        </View>
         <View style={styles.sectionContainer}>
           <View style={styles.profileContainer}>
             <LinearGradient

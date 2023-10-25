@@ -3,6 +3,7 @@ import { SafeAreaView, Text, Button } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { app } from "../firebaseConfig";
+import Navbar from "../components/navbar";
 
 const SettingsScreen = ({ navigation }) => {
   const auth = getAuth(app);
@@ -26,6 +27,7 @@ const SettingsScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView>
+      <Navbar />
       <Text>Settings Screen</Text>
       <Button title="Sign Out" onPress={handleSignOut} />
       <Button title="Back to Profile" onPress={() => navigation.goBack()} />
