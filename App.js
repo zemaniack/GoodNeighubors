@@ -14,6 +14,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 function App() {
   const [initializing, setInitializing] = React.useState(true);
   const [user, setUser] = React.useState(null);
+  const developing = true;
 
   const Stack = createNativeStackNavigator();
 
@@ -33,14 +34,10 @@ function App() {
     return null;
   }
 
-  const developing = true;
-  const auth = getAuth(app).currentUser;
-  console.log("user", auth);
-
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={auth && developing ? "Home" : "Auth"}
+        initialRouteName={user && developing ? "Home" : "Auth"}
         // initialRouteName="Auth"
         screenOptions={{ headerShown: false }}
       >

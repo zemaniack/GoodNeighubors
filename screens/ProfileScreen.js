@@ -8,8 +8,6 @@ import {
   Image,
   TextInput,
   ScrollView,
-  FlatList,
-  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { getAuth } from "firebase/auth";
@@ -24,8 +22,9 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import * as ImagePicker from "expo-image-picker";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uploadImage from "../hooks/uploadImage";
+import pickImage from "../hooks/pickImage";
 
 const ProfileScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -126,23 +125,11 @@ const ProfileScreen = ({ navigation }) => {
       });
   };
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.canceled) {
-      setProfilePicture(result.assets[0].uri);
-      console.log(profilePicture);
-
-      uploadImage(profilePicture);
-      console.log("uploaded");
+  const uploadPhoto = async () => {
+    const uri = await pickImage();
+    if (uri !== null) {
+      const url = await uploadImage(uri);
+      setProfilePicture(url);
     }
   };
 
@@ -187,7 +174,7 @@ const ProfileScreen = ({ navigation }) => {
                   />
                 )}
 
-                <Button title="Upload Photo" onPress={() => pickImage()} />
+                <Button title="Upload Photo" onPress={() => uploadPhoto()} />
               </View>
               <Text style={styles.profileName}>
                 {auth.currentUser.displayName}
