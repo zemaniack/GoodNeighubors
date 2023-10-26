@@ -8,6 +8,8 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Modal,
+  Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { getAuth } from "firebase/auth";
@@ -28,6 +30,7 @@ import pickImage from "../hooks/pickImage";
 import Navbar from "../components/navbar";
 
 const ProfileScreen = ({ navigation }) => {
+  // Profile information states
   const [email, setEmail] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [address, setAddress] = React.useState("");
@@ -46,8 +49,13 @@ const ProfileScreen = ({ navigation }) => {
   const [lastName, setLastName] = React.useState("");
   const [profilePicture, setProfilePicture] = React.useState(null);
 
+  // Modal usage state
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  // Instantiation of auth
   const auth = getAuth(app);
 
+  // If on web all good, other platforms require permissions
   React.componentDidMount = async () => {
     if (Platform.OS !== "web") {
       const { status } =
@@ -58,6 +66,7 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
+  // When page loads, get user information
   React.useEffect(() => {
     const loadData = async () => {
       const docSnap = await getSnapshot();
@@ -80,7 +89,6 @@ const ProfileScreen = ({ navigation }) => {
         setFirstName(data?.firstName ?? "");
         setLastName(data?.lastName ?? "");
       } else {
-        // docSnap.data() will be undefined in this case
         console.log("No such document!");
       }
     };
@@ -173,6 +181,188 @@ const ProfileScreen = ({ navigation }) => {
             </LinearGradient>
           </View>
           <View style={styles.infoContainer}>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisible(!modalVisible);
+              }}
+              // style={styles.editInfoModal}
+            >
+              <View style={styles.modalContainer}>
+                <LinearGradient
+                  colors={["#192f6a", "#3b5998", "#4c669f"]}
+                  style={styles.bubbleModal}
+                  start={{ x: 1, y: 1 }}
+                  end={{ x: 0, y: 0 }}
+                >
+                  <Text style={styles.header}>Edit Account Information</Text>
+                  <ScrollView style={styles.infoSection}>
+                    <View style={styles.namesLabelContainer}>
+                      <Text style={[styles.label, styles.name]}>
+                        First Name
+                      </Text>
+                      <Text style={[styles.label, styles.name]}>Last Name</Text>
+                    </View>
+                    <View style={styles.namesContainer}>
+                      <TextInput
+                        style={[styles.input, styles.name]}
+                        autoCapitalize="none"
+                        placeholder="Jane"
+                        value={firstName}
+                        onChangeText={(text) => setFirstName(text)}
+                      />
+                      <TextInput
+                        style={[styles.input, styles.name]}
+                        autoCapitalize="none"
+                        placeholder="Smith"
+                        value={lastName}
+                        onChangeText={(text) => setLastName(text)}
+                      />
+                    </View>
+                    {/* </View> */}
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="email@email.com"
+                      value={email}
+                      onChangeText={(text) => setEmail(text)}
+                    />
+                    <Text style={styles.label}>Username</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="BuffaloBillsFan123"
+                      value={username}
+                      onChangeText={(text) => setUsername(text)}
+                    />
+                    <Text style={styles.label}>Address</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="123 Street Name, County, State Zip"
+                      value={address}
+                      onChangeText={(text) => setAddress(text)}
+                    />
+                    <Text style={styles.label}>Account Type</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="(basic, volunteer, authority, authority coordinator)"
+                      value={accountType}
+                      onChangeText={(text) => setAccountType(text)}
+                    />
+                    <Text style={styles.label}>Phone Number</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="(123)-456-7890"
+                      value={phoneNumber}
+                      onChangeText={(text) => setPhoneNumber(text)}
+                    />
+                    <Text style={styles.label}>Date of Birth</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="January 1, 2000"
+                      value={dob}
+                      onChangeText={(text) => setDob(text)}
+                    />
+                    <Text style={[styles.label, styles.sectionTitle]}>
+                      Emergency Contact Information
+                    </Text>
+                    <Text style={styles.description}>
+                      This will be used only in emergency situations, such as
+                      being incapacitated or unable to be reached during a
+                      disaster situation.
+                    </Text>
+                    <Text style={styles.label}>Emergency Contact Name</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="John Smith"
+                      value={emergencyContactName}
+                      onChangeText={(text) => setEmergencyContactName(text)}
+                    />
+                    <Text style={styles.label}>Emergency Contact Number</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="(123)-456-7890"
+                      value={emergencyContactNumber}
+                      onChangeText={(text) => setEmergencyContactNumber(text)}
+                    />
+                    <Text style={styles.label}>Emergency Contact Email</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="email@email.com"
+                      value={emergencyContactEmail}
+                      onChangeText={(text) => setEmergencyContactEmail(text)}
+                    />
+                    <Text style={[styles.label, styles.sectionTitle]}>
+                      Household Information
+                    </Text>
+                    <Text style={styles.description}>
+                      This information will be used to help first responders
+                      determine the number of people and pets that may need
+                      assistance during a disaster situation.
+                    </Text>
+                    <Text style={styles.label}>Number of Adults</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="2"
+                      value={numberOfAdults}
+                      onChangeText={(text) => setNumberOfAdults(text)}
+                    />
+                    <Text style={styles.label}>Number of Children</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="3"
+                      value={numberOfChildren}
+                      onChangeText={(text) => setNumberOfChildren(text)}
+                    />
+                    <Text style={styles.label}>Number of Pets</Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="Number of Pets"
+                      value={numberOfPets}
+                      onChangeText={(text) => setNumberOfPets(text)}
+                    />
+                    <Text style={styles.label}>
+                      Significant Medical Conditions or Disabilities
+                    </Text>
+                    <TextInput
+                      style={styles.input}
+                      autoCapitalize="none"
+                      placeholder="Chronic Heart Disease, Asthma, Depression, etc."
+                      value={medicalConditions}
+                      onChangeText={(text) => setMedicalConditions(text)}
+                    />
+                  </ScrollView>
+                  <View style={styles.infoFooter}>
+                    <Pressable
+                      onPress={() => handleSave()}
+                      style={styles.saveModal}
+                    >
+                      Save Info
+                    </Pressable>
+                    <Pressable
+                      onPress={() => setModalVisible(false)}
+                      style={styles.closeModal}
+                    >
+                      Close modal
+                    </Pressable>
+                  </View>
+                </LinearGradient>
+              </View>
+            </Modal>
             <LinearGradient
               colors={["#192f6a", "#3b5998", "#4c669f"]}
               style={styles.bubble}
@@ -180,155 +370,41 @@ const ProfileScreen = ({ navigation }) => {
               end={{ x: 0, y: 0 }}
             >
               <Text style={styles.header}>Account Information</Text>
-              <ScrollView style={styles.infoSection}>
-                {/* <View style={styles.names}> */}
-                <View style={styles.namesLabelContainer}>
-                  <Text style={[styles.label, styles.name]}>First Name</Text>
-                  <Text style={[styles.label, styles.name]}>Last Name</Text>
-                </View>
-                <View style={styles.namesContainer}>
-                  <TextInput
-                    style={[styles.input, styles.name]}
-                    autoCapitalize="none"
-                    placeholder="Jane"
-                    value={firstName}
-                    onChangeText={(text) => setFirstName(text)}
-                  />
-                  <TextInput
-                    style={[styles.input, styles.name]}
-                    autoCapitalize="none"
-                    placeholder="Smith"
-                    value={lastName}
-                    onChangeText={(text) => setLastName(text)}
-                  />
-                </View>
-                {/* </View> */}
-                <Text style={styles.label}>Email</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="email@email.com"
-                  value={email}
-                  onChangeText={(text) => setEmail(text)}
-                />
-                <Text style={styles.label}>Username</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="BuffaloBillsFan123"
-                  value={username}
-                  onChangeText={(text) => setUsername(text)}
-                />
-                <Text style={styles.label}>Address</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="123 Street Name, County, State Zip"
-                  value={address}
-                  onChangeText={(text) => setAddress(text)}
-                />
-                <Text style={styles.label}>Account Type</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="(basic, volunteer, authority, authority coordinator)"
-                  value={accountType}
-                  onChangeText={(text) => setAccountType(text)}
-                />
-                <Text style={styles.label}>Phone Number</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="(123)-456-7890"
-                  value={phoneNumber}
-                  onChangeText={(text) => setPhoneNumber(text)}
-                />
-                <Text style={styles.label}>Date of Birth</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="January 1, 2000"
-                  value={dob}
-                  onChangeText={(text) => setDob(text)}
-                />
+              <View>
                 <Text style={[styles.label, styles.sectionTitle]}>
-                  Emergency Contact Information
+                  Personal Information
                 </Text>
-                <Text style={styles.description}>
-                  This will be used only in emergency situations, such as being
-                  incapacitated or unable to be reached during a disaster
-                  situation.
-                </Text>
-                <Text style={styles.label}>Emergency Contact Name</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="John Smith"
-                  value={emergencyContactName}
-                  onChangeText={(text) => setEmergencyContactName(text)}
-                />
-                <Text style={styles.label}>Emergency Contact Number</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="(123)-456-7890"
-                  value={emergencyContactNumber}
-                  onChangeText={(text) => setEmergencyContactNumber(text)}
-                />
-                <Text style={styles.label}>Emergency Contact Email</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="email@email.com"
-                  value={emergencyContactEmail}
-                  onChangeText={(text) => setEmergencyContactEmail(text)}
-                />
-                <Text style={[styles.label, styles.sectionTitle]}>
-                  Household Information
-                </Text>
-                <Text style={styles.description}>
-                  This information will be used to help first responders
-                  determine the number of people and pets that may need
-                  assistance during a disaster situation.
-                </Text>
-                <Text style={styles.label}>Number of Adults</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="2"
-                  value={numberOfAdults}
-                  onChangeText={(text) => setNumberOfAdults(text)}
-                />
-                <Text style={styles.label}>Number of Children</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="3"
-                  value={numberOfChildren}
-                  onChangeText={(text) => setNumberOfChildren(text)}
-                />
-                <Text style={styles.label}>Number of Pets</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="Number of Pets"
-                  value={numberOfPets}
-                  onChangeText={(text) => setNumberOfPets(text)}
-                />
                 <Text style={styles.label}>
                   Significant Medical Conditions or Disabilities
                 </Text>
-                <TextInput
-                  style={styles.input}
-                  autoCapitalize="none"
-                  placeholder="Chronic Heart Disease, Asthma, Depression, etc."
-                  value={medicalConditions}
-                  onChangeText={(text) => setMedicalConditions(text)}
-                />
-              </ScrollView>
-              <View style={styles.infoFooter}>
-                <Button title="Save Info" onPress={() => handleSave()} />
               </View>
+              <View>
+                <Text style={[styles.label, styles.sectionTitle]}>
+                  Household Information
+                </Text>
+                <Text style={styles.label}>
+                  Number of Adults: {numberOfAdults}
+                </Text>
+                <Text style={styles.label}>
+                  Number of Children: {numberOfChildren}
+                </Text>
+                <Text style={styles.label}>Number of Pets: {numberOfPets}</Text>
+                <Text style={styles.label}>
+                  Significant Medical Conditions or Disabilities:{" "}
+                  {medicalConditions}
+                </Text>
+              </View>
+              <View>
+                <Text style={[styles.label, styles.sectionTitle]}>
+                  Emergency Contact Information
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => setModalVisible(true)}
+                style={styles.modalOpen}
+              >
+                Edit account information
+              </Pressable>
             </LinearGradient>
           </View>
         </View>
@@ -412,6 +488,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  bubbleModal: {
+    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "column",
+    flex: 1,
+    width: "50%",
+    height: "100%",
+    alignContent: "center",
+  },
   input: {
     height: 50,
     margin: 12,
@@ -439,7 +526,9 @@ const styles = StyleSheet.create({
   infoFooter: {
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    margin: 10,
   },
   label: {
     fontWeight: "bold",
@@ -457,6 +546,39 @@ const styles = StyleSheet.create({
     margin: 15,
     marginTop: 5,
     marginBottom: 5,
+  },
+  modalContainer: {
+    width: "100%",
+    flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#00000080",
+  },
+  closeModal: {
+    backgroundColor: "grey",
+    borderRadius: 10,
+    borderColor: "red",
+    borderWidth: 4,
+    padding: 10,
+    marginLeft: 10,
+    fontWeight: "bold",
+  },
+  saveModal: {
+    backgroundColor: "grey",
+    borderRadius: 10,
+    borderColor: "blue",
+    borderWidth: 4,
+    padding: 10,
+    fontWeight: "bold",
+  },
+  modalOpen: {
+    backgroundColor: "grey",
+    borderRadius: 10,
+    borderColor: "blue",
+    borderWidth: 4,
+    padding: 10,
+    fontWeight: "bold",
   },
 });
 
