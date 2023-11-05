@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import app from "./firebaseConfig";
+import { app } from "./firebaseConfig";
 
 import AuthScreen from "./screens/AuthScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -14,6 +14,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 function App() {
   const [initializing, setInitializing] = React.useState(true);
   const [user, setUser] = React.useState(null);
+  const developing = true;
 
   const Stack = createNativeStackNavigator();
 
@@ -35,9 +36,13 @@ function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={user ? "Home" : "Auth"}>
+      <Stack.Navigator
+        initialRouteName={user && developing ? "Home" : "Auth"}
+        // initialRouteName="Auth"
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="Auth" component={AuthScreen} />
-        {user && (
+        {(user || developing) && (
           <>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
